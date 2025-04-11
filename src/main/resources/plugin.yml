@@ -1,0 +1,4 @@
+name: MCGambling
+version: '1.0-SNAPSHOT'
+main: org.powell.mCGambling.MCGambling
+api-version: '1.21'
