@@ -71,15 +71,17 @@ public class LineGamble implements Listener {
         ItemStack pu = new ItemStack(main.getGuiApi().getHead("45c588b9ec0a08a37e01a809ed0903cc34c3e3f176dc92230417da93b948f148"));
         gui.setItemName(pu, ChatColor.GOLD, "_ _ _");
         gui.setItemLore(pu, null, "");
-        gui.setItem(inv, pu, 31);
+        gui.setItem(inv, pu, 43);
 
         ItemStack start = new ItemStack(main.getGuiApi().getHead("a79a5c95ee17abfef45c8dc224189964944d560f19a44f19f8a46aef3fee4756"));
         gui.setItemName(start, ChatColor.GOLD, "Start The Wheel");
         gui.setItemLore(start, null, "");
-        gui.setItem(inv, start, 44);
+        gui.setItem(inv, start, 42);
 
-        for (int i : new int[]{9, 10, 11, 12, 14, 15, 16, 17, 18, 26, 27, 28, 29, 30, 32, 33, 34, 35}) {
-            gui.setFrames(inv, i);
+        for (int i = 0; i < inv.getSize(); i++) {
+            if (i != 0 && i != 36 && i != 37 && i != 39 && i != 41 && i != 42 && i != 43 && inv.getItem(i) == null) {
+                gui.setFrames(inv, i);
+            }
         }
 
         ItemStack redPane = new ItemStack(Material.RED_STAINED_GLASS_PANE);
@@ -189,7 +191,7 @@ public class LineGamble implements Listener {
                 selectedColor = "BLACK";
                 player.sendMessage(ChatColor.DARK_GRAY + "You selected BLACK!");
                 break;
-            case 44:
+            case 42:
                 if (selectedColor == null) {
                     player.sendMessage(ChatColor.RED + "Please select a color first!");
                     return;
