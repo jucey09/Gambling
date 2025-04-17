@@ -4,13 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.powell.guiApi.GuiApi;
 import org.powell.mCGambling.commands.GambleCommand;
-import org.powell.mCGambling.guis.LineGamble;
-import org.powell.mCGambling.guis.SlotMachine;
-import org.powell.mCGambling.guis.RussianRoulett;
-import org.powell.mCGambling.guis.DiceGame;
-import org.powell.mCGambling.guis.CoinTower;
-import org.powell.mCGambling.guis.TreasureHunt;
-import org.powell.mCGambling.guis.WheelOfFortune;
+import org.powell.mCGambling.guis.*;
 
 public final class MCGambling extends JavaPlugin {
     private GuiApi guiApi;
@@ -48,18 +42,11 @@ public final class MCGambling extends JavaPlugin {
     }
 
     public GuiApi getGuiApi() { return guiApi; }
-
     public LineGamble getLineGamble() { return lineGamble; }
-
     public SlotMachine getSlotMachine() { return slotMachine; }
-
     public RussianRoulett getRussianRoulett() { return russianRoulett; }
-
     public DiceGame getDiceGame() { return diceGame; }
-
     public CoinTower getCoinTower() { return coinTower; }
-
     public TreasureHunt getTreasureHunt() { return treasureHunt; }
-
     public WheelOfFortune getWheelOfFortune() { return wheelOfFortune; }
 }

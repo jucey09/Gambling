@@ -1,6 +1,8 @@
 package org.powell.mCGambling.guis;
 
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,13 +25,7 @@ public class WheelOfFortune implements Listener {
     private final Inventory inv;
     private final List<Integer> wheelSlots = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 25, 24, 23, 22, 21, 20, 19);
     private final int arrowSlot = 4;
-    private final List<WheelSegment> segments = Arrays.asList(
-        new WheelSegment(Material.DIAMOND_BLOCK, ChatColor.AQUA + "JACKPOT", 10.0),
-        new WheelSegment(Material.GOLD_BLOCK, ChatColor.GOLD + "BIG WIN", 5.0),
-        new WheelSegment(Material.EMERALD_BLOCK, ChatColor.GREEN + "GOOD WIN", 3.0),
-        new WheelSegment(Material.IRON_BLOCK, ChatColor.GRAY + "SMALL WIN", 2.0),
-        new WheelSegment(Material.COAL_BLOCK, ChatColor.DARK_GRAY + "LOSE", 0.0)
-    );
+    private final List<WheelSegment> segments = Arrays.asList(new WheelSegment(Material.DIAMOND_BLOCK, ChatColor.AQUA + "JACKPOT", 10.0), new WheelSegment(Material.GOLD_BLOCK, ChatColor.GOLD + "BIG WIN", 5.0), new WheelSegment(Material.EMERALD_BLOCK, ChatColor.GREEN + "GOOD WIN", 3.0), new WheelSegment(Material.IRON_BLOCK, ChatColor.GRAY + "SMALL WIN", 2.0), new WheelSegment(Material.COAL_BLOCK, ChatColor.DARK_GRAY + "LOSE", 0.0));
     private boolean isSpinning = false;
     private int currentPosition = 0;
 
@@ -99,10 +95,10 @@ public class WheelOfFortune implements Listener {
         isSpinning = true;
 
         new BukkitRunnable() {
-            int ticks = 0;
-            int speed = 1;
             final int maxTicks = 60 + new Random().nextInt(20);
             final Random random = new Random();
+            int ticks = 0;
+            int speed = 1;
 
             @Override
             public void run() {
@@ -143,7 +139,7 @@ public class WheelOfFortune implements Listener {
     private void checkWin(Player player) {
         WheelSegment segment = segments.get(currentPosition);
         player.sendMessage(ChatColor.GREEN + "You landed on: " + segment.name);
-        
+
         if (segment.multiplier > 0) {
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
             int i = inv.getItem(31).getAmount();

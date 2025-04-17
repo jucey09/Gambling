@@ -123,6 +123,7 @@ public class LineGamble implements Listener {
                         }
 
                         if (isWinner) {
+                            player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
                             player.sendMessage(ChatColor.GREEN + "Congratulations! You won!");
                             ItemStack item8 = inv.getItem(8);
                             ItemStack item36 = inv.getItem(36);
@@ -133,6 +134,7 @@ public class LineGamble implements Listener {
                                 player.getInventory().addItem(new ItemStack(Material.DIAMOND, totalAmount));
                             }
                         } else {
+                            player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_DEATH, 1.0f, 1.0f);
                             player.sendMessage(ChatColor.RED + "Sorry, you lost!");
                             player.getInventory().remove(Material.DIAMOND);
                             inv.getItem(36).setAmount(1);
@@ -140,6 +142,10 @@ public class LineGamble implements Listener {
                     }
                     return;
                 }
+                if (ticks % 4 == 0) {
+                    player.playSound(player.getLocation(), org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 1.0f + (float) ticks / maxTicks);
+                }
+
                 ItemStack temp = inv.getItem(middleRow[0]);
                 for (int i = 0; i < middleRow.length - 1; i++) {
                     inv.setItem(middleRow[i], inv.getItem(middleRow[i + 1]));
@@ -150,9 +156,7 @@ public class LineGamble implements Listener {
                 ticks++;
             }
         }.runTaskTimer(main, 0L, 2L);
-
     }
-
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
@@ -185,17 +189,21 @@ public class LineGamble implements Listener {
                 break;
             case 39:
                 selectedColor = "RED";
+                player.playSound(player.getLocation(), org.bukkit.Sound.BLOCK_NOTE_BLOCK_BELL, 1.0f, 1.2f);
                 player.sendMessage(ChatColor.RED + "You selected RED!");
                 break;
             case 41:
                 selectedColor = "BLACK";
+                player.playSound(player.getLocation(), org.bukkit.Sound.BLOCK_NOTE_BLOCK_BELL, 1.0f, 0.8f);
                 player.sendMessage(ChatColor.DARK_GRAY + "You selected BLACK!");
                 break;
             case 42:
                 if (selectedColor == null) {
+                    player.playSound(player.getLocation(), org.bukkit.Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.5f);
                     player.sendMessage(ChatColor.RED + "Please select a color first!");
                     return;
                 }
+                player.playSound(player.getLocation(), org.bukkit.Sound.BLOCK_NOTE_BLOCK_CHIME, 1.0f, 1.0f);
                 startSpinAnimation(player, inv);
                 break;
         }

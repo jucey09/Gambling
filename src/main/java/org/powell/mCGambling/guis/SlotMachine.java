@@ -20,13 +20,7 @@ public class SlotMachine implements Listener {
     private final String title = ChatColor.DARK_AQUA + "Slot Machine";
     private final Inventory inv;
     private final int[] reelSlots = {11, 13, 15};
-    private final Material[] symbols = {
-            Material.DIAMOND,
-            Material.GOLD_INGOT,
-            Material.EMERALD,
-            Material.IRON_INGOT,
-            Material.COAL
-    };
+    private final Material[] symbols = {Material.DIAMOND, Material.GOLD_INGOT, Material.EMERALD, Material.IRON_INGOT, Material.COAL};
     private boolean isSpinning = false;
 
     public SlotMachine(MCGambling main, GuiApi gui) {
@@ -82,9 +76,9 @@ public class SlotMachine implements Listener {
         isSpinning = true;
 
         new BukkitRunnable() {
-            int ticks = 0;
             final int maxTicks = 30;
             final Random random = new Random();
+            int ticks = 0;
 
             @Override
             public void run() {
@@ -96,7 +90,7 @@ public class SlotMachine implements Listener {
                 }
 
                 for (int slot : reelSlots) {
-                    if (ticks < maxTicks - (reelSlots.length - (slot - 11)/2) * 5) {
+                    if (ticks < maxTicks - (reelSlots.length - (slot - 11) / 2) * 5) {
                         setRandomSymbol(slot);
                     }
                 }

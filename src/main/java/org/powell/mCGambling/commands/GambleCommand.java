@@ -9,18 +9,17 @@ import org.powell.mCGambling.MCGambling;
 
 public class GambleCommand implements CommandExecutor {
     private final MCGambling main;
+
     public GambleCommand(MCGambling main) {
         this.main = main;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ChatColor.RED + "Only players can use gambling commands!");
             return true;
         }
-
-        Player player = (Player) sender;
 
         if (args.length != 1) {
             sendUsage(player);

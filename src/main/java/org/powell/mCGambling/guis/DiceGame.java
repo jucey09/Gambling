@@ -1,6 +1,9 @@
 package org.powell.mCGambling.guis;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,11 +17,11 @@ import org.powell.mCGambling.MCGambling;
 import java.util.Random;
 
 public class DiceGame implements Listener {
-    private MCGambling main;
-    private GuiApi gui;
-    private String title = ChatColor.GOLD + "Dice Game";
-    private Inventory inv;
-    private int[] diceSlots = {11, 13, 15};
+    private final MCGambling main;
+    private final GuiApi gui;
+    private final String title = ChatColor.GOLD + "Dice Game";
+    private final Inventory inv;
+    private final int[] diceSlots = {11, 13, 15};
     private boolean isRolling = false;
 
     public DiceGame(MCGambling main, GuiApi gui) {
@@ -89,7 +92,7 @@ public class DiceGame implements Listener {
                 }
 
                 for (int slot : diceSlots) {
-                    if (ticks < maxTicks - (diceSlots.length - (slot - 11)/2) * 3) {
+                    if (ticks < maxTicks - (diceSlots.length - (slot - 11) / 2) * 3) {
                         setDiceFace(slot, random.nextInt(6) + 1);
                     }
                 }

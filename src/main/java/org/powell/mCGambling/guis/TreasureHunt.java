@@ -1,6 +1,8 @@
 package org.powell.mCGambling.guis;
 
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -54,10 +56,10 @@ public class TreasureHunt implements Listener {
     private void resetBoard() {
         revealedSlots.clear();
         treasureLocation = treasureSlots.get(new Random().nextInt(treasureSlots.size()));
-        
+
         ItemStack hiddenSlot = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         gui.setItemName(hiddenSlot, ChatColor.GRAY, "Click to Dig!");
-        
+
         for (int slot : treasureSlots) {
             gui.setItem(inv, hiddenSlot.clone(), slot);
         }
@@ -86,13 +88,13 @@ public class TreasureHunt implements Listener {
 
     private void startGame(Player player) {
         if (isPlaying) return;
-        
+
         ItemStack wager = inv.getItem(31);
         if (wager == null || wager.getType() != Material.DIAMOND) {
             player.sendMessage(ChatColor.RED + "Please place a diamond wager first!");
             return;
         }
-        
+
         isPlaying = true;
         resetBoard();
         player.sendMessage(ChatColor.GREEN + "The hunt begins! Click squares to dig for treasure!");
@@ -103,7 +105,7 @@ public class TreasureHunt implements Listener {
 
         if (slot == treasureLocation) {
             ItemStack treasure = new ItemStack(Material.CHEST);
-            gui.setItemName(treasure, ChatColor.GOLD,"TREASURE!");
+            gui.setItemName(treasure, ChatColor.GOLD, "TREASURE!");
             gui.setItem(inv, treasure, slot);
             win(player);
         } else {
@@ -137,7 +139,7 @@ public class TreasureHunt implements Listener {
 
     private void lose(Player player, String message) {
         ItemStack treasure = new ItemStack(Material.CHEST);
-        gui.setItemName(treasure, ChatColor.GOLD,"TREASURE WAS HERE!");
+        gui.setItemName(treasure, ChatColor.GOLD, "TREASURE WAS HERE!");
         gui.setItem(inv, treasure, treasureLocation);
 
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 1.0f);

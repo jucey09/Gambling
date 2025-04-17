@@ -1,6 +1,8 @@
 package org.powell.mCGambling.guis;
 
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -93,8 +95,8 @@ public class CoinTower implements Listener {
         isPlaying = true;
 
         new BukkitRunnable() {
-            int currentLevel = 0;
             final Random random = new Random();
+            int currentLevel = 0;
 
             @Override
             public void run() {
