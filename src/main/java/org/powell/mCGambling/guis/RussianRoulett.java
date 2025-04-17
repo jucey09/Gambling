@@ -54,8 +54,8 @@ public class RussianRoulett implements Listener {
         gui.setItemName(bullet, ChatColor.RED, "Bullet");
         gui.setItem(inv, bullet, 13);
 
-        for (int i = 0; i < 27; i++) {
-            if (!isChamberSlot(i) && i != 0 && i != 13 && i != 22 && i != 26) {
+        for (int i = 0; i < inv.getSize(); i++) {
+            if (i != 0 && i != 13 && i != 22 && i != 26 && !isChamberSlot(i) && inv.getItem(i) == null) {
                 gui.setFrames(inv, i);
             }
         }

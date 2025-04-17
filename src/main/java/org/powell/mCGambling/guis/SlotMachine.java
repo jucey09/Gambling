@@ -52,8 +52,8 @@ public class SlotMachine implements Listener {
             setRandomSymbol(slot);
         }
 
-        for (int i = 0; i < 27; i++) {
-            if (!isReelSlot(i) && i != 0 && i != 22 && i != 26) {
+        for (int i = 0; i < inv.getSize(); i++) {
+            if (i != 0 && i != 22 && i != 26 && !isReelSlot(i) && inv.getItem(i) == null) {
                 gui.setFrames(inv, i);
             }
         }
