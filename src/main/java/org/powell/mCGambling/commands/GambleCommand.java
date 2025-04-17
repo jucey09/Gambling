@@ -14,11 +14,13 @@ public class GambleCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(ChatColor.RED + "This command can only be used by players!");
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "Only players can use gambling commands!");
             return true;
         }
+
+        Player player = (Player) sender;
 
         if (args.length != 1) {
             sendUsage(player);
@@ -29,16 +31,27 @@ public class GambleCommand implements CommandExecutor {
             case "line" -> main.getLineGamble().openGUI(player);
             case "slot" -> main.getSlotMachine().openGUI(player);
             case "roulette" -> main.getRussianRoulett().openGUI(player);
-            default -> sendUsage(player);
+            case "dice" -> main.getDiceGame().openGUI(player);
+            case "tower" -> main.getCoinTower().openGUI(player);
+            case "treasure" -> main.getTreasureHunt().openGUI(player);
+            case "wheel" -> main.getWheelOfFortune().openGUI(player);
+            default -> {
+                sendUsage(player);
+                return true;
+            }
         }
+
         return true;
     }
 
     private void sendUsage(Player player) {
-        player.sendMessage(ChatColor.RED + "Usage: /mcg <game>");
-        player.sendMessage(ChatColor.GRAY + "Available games:");
-        player.sendMessage(ChatColor.GRAY + "- line: Line gambling game");
-        player.sendMessage(ChatColor.GRAY + "- slot: Slot machine");
-        player.sendMessage(ChatColor.GRAY + "- roulette: Russian roulette");
+        player.sendMessage(ChatColor.GOLD + "=== MCGambling Games ===");
+        player.sendMessage(ChatColor.YELLOW + "/mcg line" + ChatColor.GRAY + " - Play Line Gambling");
+        player.sendMessage(ChatColor.YELLOW + "/mcg slot" + ChatColor.GRAY + " - Play Slot Machine");
+        player.sendMessage(ChatColor.YELLOW + "/mcg roulette" + ChatColor.GRAY + " - Play Russian Roulette");
+        player.sendMessage(ChatColor.YELLOW + "/mcg dice" + ChatColor.GRAY + " - Play Dice Game");
+        player.sendMessage(ChatColor.YELLOW + "/mcg tower" + ChatColor.GRAY + " - Play Coin Tower");
+        player.sendMessage(ChatColor.YELLOW + "/mcg treasure" + ChatColor.GRAY + " - Play Treasure Hunt");
+        player.sendMessage(ChatColor.YELLOW + "/mcg wheel" + ChatColor.GRAY + " - Play Wheel of Fortune");
     }
 }

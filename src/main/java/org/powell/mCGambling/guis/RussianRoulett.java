@@ -35,8 +35,6 @@ public class RussianRoulett implements Listener {
         gui.setItem(inv, closeButton, 0);
 
         ItemStack wager = new ItemStack(Material.DIAMOND);
-        gui.setItemName(wager, ChatColor.BLUE, "Place Wager Here");
-        gui.setItemLore(wager, ChatColor.GRAY, "Win 5x your bet or Lose Everything");
         gui.setItem(inv, wager, 22);
 
         ItemStack spinButton = new ItemStack(main.getGuiApi().getHead("a79a5c95ee17abfef45c8dc224189964944d560f19a44f19f8a46aef3fee4756"));
@@ -132,8 +130,9 @@ public class RussianRoulett implements Listener {
             Location location = player.getLocation();
             player.getInventory().remove(Material.TOTEM_OF_UNDYING);
             player.setHealth(0);
-            for (int i = 0; i < 50; i++) {
-                world.spawnEntity(location, EntityType.TNT);
+            world.spawnEntity(location, EntityType.TNT);
+            for (int i = 0; i < 5; i++) {
+                world.spawnEntity(location, EntityType.TNT_MINECART);
             }
 
             wager.setAmount(1);
