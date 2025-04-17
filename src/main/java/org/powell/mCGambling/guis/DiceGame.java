@@ -58,13 +58,8 @@ public class DiceGame implements Listener {
     }
 
     private void setDiceFace(int slot, int number) {
-        ItemStack dice = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+        ItemStack dice = new ItemStack(Material.DIAMOND, number);
         gui.setItemName(dice, ChatColor.GOLD, "Dice: " + number);
-        String[] dots = new String[number];
-        for (int i = 0; i < number; i++) {
-            dots[i] = "⬤";
-        }
-        gui.setItemLore(dice, ChatColor.RED, String.join(" ", dots));
         gui.setItem(inv, dice, slot);
     }
 
