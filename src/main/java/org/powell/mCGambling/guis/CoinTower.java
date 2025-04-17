@@ -131,6 +131,8 @@ public class CoinTower implements Listener {
     private void win(Player player) {
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
         player.sendMessage(ChatColor.GREEN + "Congratulations! You reached the top of the tower!");
+        int i = inv.getItem(25).getAmount();
+        player.getInventory().addItem(new ItemStack(Material.DIAMOND, 5 + i));
         resetTower();
     }
 

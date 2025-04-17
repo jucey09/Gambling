@@ -86,6 +86,13 @@ public class TreasureHunt implements Listener {
 
     private void startGame(Player player) {
         if (isPlaying) return;
+        
+        ItemStack wager = inv.getItem(31);
+        if (wager == null || wager.getType() != Material.DIAMOND) {
+            player.sendMessage(ChatColor.RED + "Please place a diamond wager first!");
+            return;
+        }
+        
         isPlaying = true;
         resetBoard();
         player.sendMessage(ChatColor.GREEN + "The hunt begins! Click squares to dig for treasure!");
@@ -105,25 +112,37 @@ public class TreasureHunt implements Listener {
             gui.setItem(inv, dirt, slot);
             player.playSound(player.getLocation(), Sound.BLOCK_GRAVEL_BREAK, 1.0f, 1.0f);
 
-            if (revealedSlots.size() >= treasureSlots.size() - 1) {
-                lose(player);
+            if (new Random().nextInt(5) == 0) {
+                ItemStack trap = new ItemStack(Material.TNT);
+                gui.setItemName(trap, ChatColor.RED, "TRAP!");
+                gui.setItem(inv, dirt.clone(), slot);
+                lose(player, "You hit a trap! Your diamonds are lost!");
+            } else if (revealedSlots.size() >= treasureSlots.size() - 1) {
+                lose(player, "You dug everywhere but found nothing! Your diamonds are lost!");
             }
         }
     }
 
     private void win(Player player) {
-        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-        player.sendMessage(ChatColor.GREEN + "Congratulations! You found the treasure!");
+        ItemStack wager = inv.getItem(31);
+        if (wager != null && wager.getType() == Material.DIAMOND) {
+            int winAmount = wager.getAmount() * 3;
+            player.getInventory().addItem(new ItemStack(Material.DIAMOND, winAmount));
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+            player.sendMessage(ChatColor.GREEN + "Congratulations! You found the treasure and won " + winAmount + " diamonds!");
+            inv.setItem(31, null);
+        }
         isPlaying = false;
     }
 
-    private void lose(Player player) {
+    private void lose(Player player, String message) {
         ItemStack treasure = new ItemStack(Material.CHEST);
         gui.setItemName(treasure, ChatColor.GOLD,"TREASURE WAS HERE!");
         gui.setItem(inv, treasure, treasureLocation);
 
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 1.0f);
-        player.sendMessage(ChatColor.RED + "Game Over! Better luck next time!");
+        player.sendMessage(ChatColor.RED + message);
+        inv.setItem(31, null);
         isPlaying = false;
     }
 }

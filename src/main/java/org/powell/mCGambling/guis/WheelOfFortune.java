@@ -22,6 +22,7 @@ public class WheelOfFortune implements Listener {
     private final String title = ChatColor.GOLD + "Wheel of Fortune";
     private final Inventory inv;
     private final List<Integer> wheelSlots = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 25, 24, 23, 22, 21, 20, 19);
+    private final int arrowSlot = 4;
     private final List<WheelSegment> segments = Arrays.asList(
         new WheelSegment(Material.DIAMOND_BLOCK, ChatColor.AQUA + "JACKPOT", 10.0),
         new WheelSegment(Material.GOLD_BLOCK, ChatColor.GOLD + "BIG WIN", 5.0),
@@ -54,15 +55,15 @@ public class WheelOfFortune implements Listener {
 
         setupWheel();
 
+        ItemStack pointer = new ItemStack(Material.ARROW);
+        gui.setItemName(pointer, ChatColor.YELLOW, "⬇ Your Prize ⬇");
+        gui.setItem(inv, pointer, arrowSlot);
+
         for (int i = 0; i < inv.getSize(); i++) {
-            if (i != 0 && i != 31 && i != 35 && !wheelSlots.contains(i) && inv.getItem(i) == null) {
+            if (i != 0 && i != 31 && i != 35 && i != arrowSlot && !wheelSlots.contains(i) && inv.getItem(i) == null) {
                 gui.setFrames(inv, i);
             }
         }
-
-        ItemStack pointer = new ItemStack(Material.ARROW);
-        gui.setItemName(pointer, ChatColor.YELLOW, "⬇ Your Prize ⬇");
-        gui.setItem(inv, pointer, 13);
     }
 
     private void setupWheel() {
@@ -145,6 +146,8 @@ public class WheelOfFortune implements Listener {
         
         if (segment.multiplier > 0) {
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+            int i = inv.getItem(31).getAmount();
+            player.getInventory().addItem(new ItemStack(Material.DIAMOND, 5 + i));
         } else {
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 1.0f);
         }

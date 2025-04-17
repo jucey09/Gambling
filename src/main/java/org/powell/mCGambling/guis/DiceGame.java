@@ -43,7 +43,7 @@ public class DiceGame implements Listener {
 
         ItemStack rollButton = new ItemStack(main.getGuiApi().getHead("a79a5c95ee17abfef45c8dc224189964944d560f19a44f19f8a46aef3fee4756"));
         gui.setItemName(rollButton, ChatColor.GREEN, "ROLL DICE!");
-        gui.setItemLore(rollButton, ChatColor.GRAY, "Match 3 numbers to win big!Higher numbers = Better rewards");
+        gui.setItemLore(rollButton, ChatColor.GRAY, "Match 3 numbers to win big! Higher numbers = Better rewards");
         gui.setItem(inv, rollButton, 26);
 
         for (int slot : diceSlots) {
@@ -60,6 +60,11 @@ public class DiceGame implements Listener {
     private void setDiceFace(int slot, int number) {
         ItemStack dice = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
         gui.setItemName(dice, ChatColor.GOLD, "Dice: " + number);
+        String[] dots = new String[number];
+        for (int i = 0; i < number; i++) {
+            dots[i] = "⬤";
+        }
+        gui.setItemLore(dice, ChatColor.RED, String.join(" ", dots));
         gui.setItem(inv, dice, slot);
     }
 
@@ -116,10 +121,16 @@ public class DiceGame implements Listener {
             player.sendMessage(ChatColor.GREEN + "Three " + numbers[0] + "s! You won " + winAmount + " diamonds!");
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
             player.getInventory().addItem(new ItemStack(Material.DIAMOND, winAmount));
+            inv.setItem(22, null);
+        } else if (numbers[0] == numbers[1] || numbers[1] == numbers[2] || numbers[0] == numbers[2]) {
+            player.sendMessage(ChatColor.YELLOW + "Two matching numbers! Your wager is returned.");
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
+            player.getInventory().addItem(wager);
+            inv.setItem(22, null);
         } else {
-            player.sendMessage(ChatColor.RED + "No match! Try again!");
+            player.sendMessage(ChatColor.RED + "No matches! You lost your wager!");
             player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 1.0f, 1.0f);
-            wager.setAmount(1);
+            inv.setItem(22, null);
         }
     }
 
