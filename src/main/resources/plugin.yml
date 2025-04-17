@@ -1,5 +1,5 @@
 name: MCGambling
-version: '1.0-SNAPSHOT'
+version: '1.0.0'
 main: org.powell.mCGambling.MCGambling
 api-version: '1.21'
 depend: [GuiApi]

@@ -15,17 +15,30 @@ public class GambleCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-        if (sender instanceof Player player){
-            if (args.length == 2) {
-                if (args[1].equalsIgnoreCase("line")){
-                    main.getSpinner().openGUI(player);
-                } else {
-                    player.sendMessage(ChatColor.RED + "INVALID USAGE! Do /mcg <type>, the types are line, _, _.");
-                }
-            } else {
-                player.sendMessage(ChatColor.RED + "INVALID USAGE! Do /mcg <type>.");
-            }
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(ChatColor.RED + "This command can only be used by players!");
+            return true;
         }
-        return false;
+
+        if (args.length != 1) {
+            sendUsage(player);
+            return true;
+        }
+
+        switch (args[0].toLowerCase()) {
+            case "line" -> main.getLineGamble().openGUI(player);
+            case "slot" -> main.getSlotMachine().openGUI(player);
+            case "roulette" -> main.getRussianRoulett().openGUI(player);
+            default -> sendUsage(player);
+        }
+        return true;
+    }
+
+    private void sendUsage(Player player) {
+        player.sendMessage(ChatColor.RED + "Usage: /mcg <game>");
+        player.sendMessage(ChatColor.GRAY + "Available games:");
+        player.sendMessage(ChatColor.GRAY + "- line: Line gambling game");
+        player.sendMessage(ChatColor.GRAY + "- slot: Slot machine");
+        player.sendMessage(ChatColor.GRAY + "- roulette: Russian roulette");
     }
 }
