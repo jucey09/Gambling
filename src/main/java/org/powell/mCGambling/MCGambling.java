@@ -15,6 +15,10 @@ public final class MCGambling extends JavaPlugin {
     private CoinTower coinTower;
     private TreasureHunt treasureHunt;
     private WheelOfFortune wheelOfFortune;
+    private Blackjack blackjack;
+    private HighLow highLow;
+    private CrashGame crashGame;
+    private Poker poker;
 
     @Override
     public void onEnable() {
@@ -27,6 +31,10 @@ public final class MCGambling extends JavaPlugin {
         coinTower = new CoinTower(this, guiApi);
         treasureHunt = new TreasureHunt(this, guiApi);
         wheelOfFortune = new WheelOfFortune(this, guiApi);
+        blackjack = new Blackjack(this, guiApi);
+        highLow = new HighLow(this, guiApi);
+        crashGame = new CrashGame(this, guiApi);
+        poker = new Poker(this, guiApi);
 
         getServer().getPluginManager().registerEvents(lineGamble, this);
         getServer().getPluginManager().registerEvents(slotMachine, this);
@@ -35,6 +43,10 @@ public final class MCGambling extends JavaPlugin {
         getServer().getPluginManager().registerEvents(coinTower, this);
         getServer().getPluginManager().registerEvents(treasureHunt, this);
         getServer().getPluginManager().registerEvents(wheelOfFortune, this);
+        getServer().getPluginManager().registerEvents(blackjack, this);
+        getServer().getPluginManager().registerEvents(highLow, this);
+        getServer().getPluginManager().registerEvents(crashGame, this);
+        getServer().getPluginManager().registerEvents(poker, this);
 
         getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "MCGambling Enabled!");
 
@@ -49,4 +61,8 @@ public final class MCGambling extends JavaPlugin {
     public CoinTower getCoinTower() { return coinTower; }
     public TreasureHunt getTreasureHunt() { return treasureHunt; }
     public WheelOfFortune getWheelOfFortune() { return wheelOfFortune; }
+    public Blackjack getBlackjack() { return blackjack; }
+    public HighLow getHighLow() { return highLow; }
+    public CrashGame getCrashGame() { return crashGame; }
+    public Poker getPoker() { return poker; }
 }

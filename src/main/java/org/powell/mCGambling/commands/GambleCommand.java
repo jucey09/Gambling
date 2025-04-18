@@ -34,6 +34,10 @@ public class GambleCommand implements CommandExecutor {
             case "tower" -> main.getCoinTower().openGUI(player);
             case "treasure" -> main.getTreasureHunt().openGUI(player);
             case "wheel" -> main.getWheelOfFortune().openGUI(player);
+            case "blackjack" -> main.getBlackjack().openGUI(player);
+            case "highlow" -> main.getHighLow().openGUI(player);
+            case "crash" -> main.getCrashGame().openGUI(player);
+            case "poker" -> main.getPoker().openGUI(player);
             default -> {
                 sendUsage(player);
                 return true;
@@ -52,5 +56,9 @@ public class GambleCommand implements CommandExecutor {
         player.sendMessage(ChatColor.YELLOW + "/mcg tower" + ChatColor.GRAY + " - Play Coin Tower");
         player.sendMessage(ChatColor.YELLOW + "/mcg treasure" + ChatColor.GRAY + " - Play Treasure Hunt");
         player.sendMessage(ChatColor.YELLOW + "/mcg wheel" + ChatColor.GRAY + " - Play Wheel of Fortune");
+        player.sendMessage(ChatColor.YELLOW + "/mcg blackjack" + ChatColor.GRAY + " - Play Blackjack");
+        player.sendMessage(ChatColor.YELLOW + "/mcg highlow" + ChatColor.GRAY + " - Play High/Low");
+        player.sendMessage(ChatColor.YELLOW + "/mcg crash" + ChatColor.GRAY + " - Play Crash Game");
+        player.sendMessage(ChatColor.YELLOW + "/mcg poker" + ChatColor.GRAY + " - Play Five Card Draw Poker");
     }
 }
