@@ -16,28 +16,7 @@ import org.powell.mCGambling.MCGambling;
 import java.util.*;
 
 public class Poker implements Listener {
-    private GuiApi gui;
-    private MCGambling main;
-    private String title = ChatColor.GOLD + "Texas Hold'em Poker";
-    private Inventory inv;
-    private List<Integer> playerCardSlots = Arrays.asList(48, 49); 
-    private List<Integer> communityCardSlots = Arrays.asList(21, 22, 23, 24, 25); 
-    private boolean isPlaying = false;
-    private List<Card> deck;
-    private List<Card> playerHand; 
-    private List<Card> communityCards; 
-    private List<Card> bot1Hand; 
-    private List<Card> bot2Hand; 
-    private int gameStage = 0; 
-    private int pot = 0; 
-    private int currentBet = 0; 
-    private int playerBet = 0; 
-    private boolean playerFolded = false;
-    private boolean bot1Folded = false;
-    private boolean bot2Folded = false;
-    private String playerName; 
-    
-    private static Map<HandRank, Integer> PAYOUT_MULTIPLIERS = new HashMap<>() {{
+    private static final Map<HandRank, Integer> PAYOUT_MULTIPLIERS = new HashMap<>() {{
         put(HandRank.ROYAL_FLUSH, 100);
         put(HandRank.STRAIGHT_FLUSH, 50);
         put(HandRank.FOUR_OF_A_KIND, 25);
@@ -49,11 +28,31 @@ public class Poker implements Listener {
         put(HandRank.ONE_PAIR, 1);
         put(HandRank.HIGH_CARD, 0);
     }};
+    private final GuiApi gui;
+    private final MCGambling main;
+    private final String title = ChatColor.GOLD + "Texas Hold'em Poker";
+    private final Inventory inv;
+    private final List<Integer> playerCardSlots = Arrays.asList(48, 49);
+    private final List<Integer> communityCardSlots = Arrays.asList(21, 22, 23, 24, 25);
+    private boolean isPlaying = false;
+    private List<Card> deck;
+    private List<Card> playerHand;
+    private List<Card> communityCards;
+    private List<Card> bot1Hand;
+    private List<Card> bot2Hand;
+    private int gameStage = 0;
+    private int pot = 0;
+    private int currentBet = 0;
+    private int playerBet = 0;
+    private boolean playerFolded = false;
+    private boolean bot1Folded = false;
+    private boolean bot2Folded = false;
+    private String playerName;
 
     public Poker(MCGambling main, GuiApi gui) {
         this.main = main;
         this.gui = gui;
-        this.inv = main.getGuiApi().createGui(null, 54, title); 
+        this.inv = main.getGuiApi().createGui(null, 54, title);
         setupGUI();
     }
 
@@ -80,7 +79,7 @@ public class Poker implements Listener {
         gui.setItem(inv, dealButton, 8);
 
         createActionButtons();
-        
+
         hideActionButtons();
 
         displayPaytable();
@@ -93,16 +92,16 @@ public class Poker implements Listener {
             }
         }
     }
-    
+
     private void createActionButtons() {
         ItemStack checkButton = new ItemStack(Material.LIGHT_BLUE_CONCRETE);
         gui.setItemName(checkButton, ChatColor.AQUA, "CHECK/CALL");
         inv.setItem(45, checkButton);
-        
+
         ItemStack raiseButton = new ItemStack(Material.YELLOW_CONCRETE);
         gui.setItemName(raiseButton, ChatColor.YELLOW, "RAISE");
         inv.setItem(46, raiseButton);
-        
+
         ItemStack foldButton = new ItemStack(Material.RED_CONCRETE);
         gui.setItemName(foldButton, ChatColor.RED, "FOLD");
         inv.setItem(47, foldButton);
@@ -118,19 +117,19 @@ public class Poker implements Listener {
             gui.setItemName(frame, ChatColor.AQUA, "Bot1");
             gui.setItem(inv, frame, 10 + i);
         }
-        
+
         for (int i = 0; i < 2; i++) {
             ItemStack frame = new ItemStack(Material.PURPLE_STAINED_GLASS_PANE);
             gui.setItemName(frame, ChatColor.LIGHT_PURPLE, "Bot2");
             gui.setItem(inv, frame, 28 + i);
         }
-        
+
         for (int slot : communityCardSlots) {
             ItemStack frame = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
             gui.setItemName(frame, ChatColor.GREEN, "Community");
             gui.setItem(inv, frame, slot);
         }
-        
+
         for (int slot : playerCardSlots) {
             ItemStack frame = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
             gui.setItemName(frame, ChatColor.YELLOW, "Your Cards");
@@ -159,7 +158,7 @@ public class Poker implements Listener {
         deck = new ArrayList<>();
         String[] suits = {"♠", "♥", "♦", "♣"};
         String[] ranks = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
-        
+
         for (String suit : suits) {
             for (String rank : ranks) {
                 deck.add(new Card(rank, suit));
@@ -215,7 +214,7 @@ public class Poker implements Listener {
         ItemStack dealButton = inv.getItem(8);
         gui.setItemName(dealButton, ChatColor.GREEN, "DEAL FLOP");
         gui.setItemLore(dealButton, ChatColor.GRAY, "Click to deal the flop!");
-        
+
         showActionButtons();
     }
 
@@ -223,17 +222,17 @@ public class Poker implements Listener {
         ItemStack potDisplay = new ItemStack(Material.GOLD_INGOT);
         gui.setItemName(potDisplay, ChatColor.GOLD, "Pot: " + pot + " diamonds");
         gui.setItem(inv, potDisplay, 3);
-        
+
         ItemStack playerInfo = new ItemStack(Material.PLAYER_HEAD);
         gui.setItemName(playerInfo, ChatColor.GREEN, player.getName());
         gui.setItemLore(playerInfo, ChatColor.GRAY, "Bet: " + playerBet + " diamonds");
         gui.setItem(inv, playerInfo, 50);
-        
+
         ItemStack bot1Info = new ItemStack(Material.SKELETON_SKULL);
         gui.setItemName(bot1Info, ChatColor.AQUA, "Bot1");
         gui.setItemLore(bot1Info, ChatColor.GRAY, bot1Folded ? "FOLDED" : "In game");
         gui.setItem(inv, bot1Info, 12);
-        
+
         ItemStack bot2Info = new ItemStack(Material.ZOMBIE_HEAD);
         gui.setItemName(bot2Info, ChatColor.LIGHT_PURPLE, "Bot2");
         gui.setItemLore(bot2Info, ChatColor.GRAY, bot2Folded ? "FOLDED" : "In game");
@@ -243,33 +242,33 @@ public class Poker implements Listener {
     private void botDecision(Player player, List<Card> botHand, int botNumber) {
         boolean isFolded = (botNumber == 1) ? bot1Folded : bot2Folded;
         if (isFolded) return;
-        
+
         int handStrength = 0;
         boolean hasPair = botHand.get(0).rank.equals(botHand.get(1).rank);
-        
+
         for (Card card : botHand) {
             handStrength += card.getRankValue();
         }
-        
+
         List<Card> allCards = new ArrayList<>(botHand);
         if (!communityCards.isEmpty()) {
             allCards.addAll(communityCards);
-            
+
             Map<String, Integer> rankCounts = new HashMap<>();
             for (Card c : allCards) {
                 rankCounts.put(c.rank, rankCounts.getOrDefault(c.rank, 0) + 1);
             }
-            
+
             if (rankCounts.containsValue(2)) handStrength += 5;
             if (rankCounts.containsValue(3)) handStrength += 10;
             if (rankCounts.containsValue(4)) handStrength += 20;
         }
-        
+
         if (hasPair) handStrength += 10;
-        
+
         Random random = new Random();
         String botName = (botNumber == 1) ? "Bot1" : "Bot2";
-        
+
         if (handStrength < 10 && random.nextDouble() < 0.7) {
             if (botNumber == 1) bot1Folded = true;
             else bot2Folded = true;
@@ -279,12 +278,12 @@ public class Poker implements Listener {
             pot += amountToCall;
             player.sendMessage(ChatColor.GRAY + botName + " calls.");
         } else {
-            int raiseAmount = 1 + random.nextInt(2); 
+            int raiseAmount = 1 + random.nextInt(2);
             currentBet += raiseAmount;
             pot += raiseAmount;
             player.sendMessage(ChatColor.GRAY + botName + " raises by " + raiseAmount + " diamonds.");
         }
-        
+
         updatePotDisplay(player);
     }
 
@@ -317,10 +316,10 @@ public class Poker implements Listener {
         }
         updateCards();
         gameStage = 1;
-        
+
         botDecision(Bukkit.getPlayer(playerName), bot1Hand, 1);
         botDecision(Bukkit.getPlayer(playerName), bot2Hand, 2);
-        
+
         ItemStack dealButton = inv.getItem(8);
         gui.setItemName(dealButton, ChatColor.GREEN, "DEAL TURN");
         gui.setItemLore(dealButton, ChatColor.GRAY, "Click to deal the turn card!");
@@ -330,10 +329,10 @@ public class Poker implements Listener {
         communityCards.add(drawCard());
         updateCards();
         gameStage = 2;
-        
+
         botDecision(Bukkit.getPlayer(playerName), bot1Hand, 1);
         botDecision(Bukkit.getPlayer(playerName), bot2Hand, 2);
-        
+
         ItemStack dealButton = inv.getItem(8);
         gui.setItemName(dealButton, ChatColor.GREEN, "DEAL RIVER");
         gui.setItemLore(dealButton, ChatColor.GRAY, "Click to deal the river card!");
@@ -343,10 +342,10 @@ public class Poker implements Listener {
         communityCards.add(drawCard());
         updateCards();
         gameStage = 3;
-        
+
         botDecision(Bukkit.getPlayer(playerName), bot1Hand, 1);
         botDecision(Bukkit.getPlayer(playerName), bot2Hand, 2);
-        
+
         ItemStack dealButton = inv.getItem(8);
         gui.setItemName(dealButton, ChatColor.GREEN, "SHOWDOWN");
         gui.setItemLore(dealButton, ChatColor.GRAY, "Click to see who wins!");
@@ -354,34 +353,34 @@ public class Poker implements Listener {
 
     private void showdown(Player player) {
         showAllCards();
-        
+
         if (playerFolded) {
             lose(player, "You folded!");
             return;
         }
-        
+
         if (bot1Folded && bot2Folded) {
             win(player, HandRank.HIGH_CARD, 1);
             return;
         }
-        
+
         HandRank playerRank = evaluateHand(playerHand, communityCards);
         HandRank bot1Rank = bot1Folded ? HandRank.HIGH_CARD : evaluateHand(bot1Hand, communityCards);
         HandRank bot2Rank = bot2Folded ? HandRank.HIGH_CARD : evaluateHand(bot2Hand, communityCards);
-        
+
         HandRank bestRank = playerRank;
         String winner = player.getName();
-        
+
         if (!bot1Folded && bot1Rank.ordinal() < bestRank.ordinal()) {
             bestRank = bot1Rank;
             winner = "Bot1";
         }
-        
+
         if (!bot2Folded && bot2Rank.ordinal() < bestRank.ordinal()) {
             bestRank = bot2Rank;
             winner = "Bot2";
         }
-        
+
         updateCards();
         if (winner.equals(player.getName())) {
             int multiplier = PAYOUT_MULTIPLIERS.get(playerRank);
@@ -390,7 +389,7 @@ public class Poker implements Listener {
         } else {
             lose(player, winner + " wins with " + bestRank + "!");
         }
-        
+
         hideActionButtons();
         ItemStack dealButton = inv.getItem(8);
         gui.setItemName(dealButton, ChatColor.GREEN, "DEAL");
@@ -406,7 +405,7 @@ public class Poker implements Listener {
                 gui.setItem(inv, cardItem, 10 + i);
             }
         }
-        
+
         for (int i = 0; i < bot2Hand.size(); i++) {
             if (!bot2Folded) {
                 ItemStack cardItem = new ItemStack(Material.PAPER);
@@ -422,7 +421,7 @@ public class Poker implements Listener {
         allCards.addAll(communityCards);
         allCards.sort((a, b) -> Integer.compare(a.getRankValue(), b.getRankValue()));
         boolean isFlush = false;
-        for (String suit : new String[] {"♠", "♥", "♦", "♣"}) {
+        for (String suit : new String[]{"♠", "♥", "♦", "♣"}) {
             int count = 0;
             for (Card c : allCards) {
                 if (c.suit.equals(suit)) count++;
@@ -548,8 +547,11 @@ public class Poker implements Listener {
             if (bot1Folded && bot2Folded) {
                 showdown(player);
             }
-            return;
         }
+    }
+
+    private enum HandRank {
+        ROYAL_FLUSH, STRAIGHT_FLUSH, FOUR_OF_A_KIND, FULL_HOUSE, FLUSH, STRAIGHT, THREE_OF_A_KIND, TWO_PAIR, ONE_PAIR, HIGH_CARD
     }
 
     private static class Card {
@@ -575,18 +577,5 @@ public class Poker implements Listener {
         public String toString() {
             return rank + suit;
         }
-    }
-
-    private enum HandRank {
-        ROYAL_FLUSH,
-        STRAIGHT_FLUSH,
-        FOUR_OF_A_KIND,
-        FULL_HOUSE,
-        FLUSH,
-        STRAIGHT,
-        THREE_OF_A_KIND,
-        TWO_PAIR,
-        ONE_PAIR,
-        HIGH_CARD
     }
 }

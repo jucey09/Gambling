@@ -271,9 +271,7 @@ public class Blackjack implements Listener {
 
         if (e.getCurrentItem() == null && e.getCursor() == null) return;
 
-        if (e.getSlot() == 31 &&
-            ((e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.DIAMOND) ||
-             (e.getCursor() != null && e.getCursor().getType() == Material.DIAMOND))) {
+        if (e.getSlot() == 31 && ((e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.DIAMOND) || (e.getCursor() != null && e.getCursor().getType() == Material.DIAMOND))) {
             e.setCancelled(false);
             return;
         }
