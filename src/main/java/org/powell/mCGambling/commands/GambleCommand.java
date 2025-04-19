@@ -6,12 +6,17 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.powell.mCGambling.MCGambling;
+import org.powell.mCGambling.guis.ProjectLauncher;
+import org.powell.guiApi.GuiApi;
 
 public class GambleCommand implements CommandExecutor {
     private final MCGambling main;
+    private final ProjectLauncher projectLauncher;
 
-    public GambleCommand(MCGambling main) {
+    public GambleCommand(MCGambling main, GuiApi guiApi) {
         this.main = main;
+        this.projectLauncher = new ProjectLauncher(main, guiApi);
+        main.getServer().getPluginManager().registerEvents(projectLauncher, main);
     }
 
     @Override
@@ -38,6 +43,7 @@ public class GambleCommand implements CommandExecutor {
             case "highlow" -> main.getHighLow().openGUI(player);
             case "crash" -> main.getCrashGame().openGUI(player);
             case "poker" -> main.getPoker().openGUI(player);
+            case "projects" -> projectLauncher.openGUI(player);
             default -> {
                 sendUsage(player);
                 return true;
@@ -59,6 +65,7 @@ public class GambleCommand implements CommandExecutor {
         player.sendMessage(ChatColor.YELLOW + "/mcg blackjack" + ChatColor.GRAY + " - Play Blackjack");
         player.sendMessage(ChatColor.YELLOW + "/mcg highlow" + ChatColor.GRAY + " - Play High/Low");
         player.sendMessage(ChatColor.YELLOW + "/mcg crash" + ChatColor.GRAY + " - Play Crash Game");
-        player.sendMessage(ChatColor.YELLOW + "/mcg poker" + ChatColor.GRAY + " - Play Five Card Draw Poker");
+        player.sendMessage(ChatColor.YELLOW + "/mcg poker" + ChatColor.GRAY + " - Play Poker");
+        player.sendMessage(ChatColor.YELLOW + "/mcg projects" + ChatColor.GRAY + " - Open Other Project's that I made");
     }
 }

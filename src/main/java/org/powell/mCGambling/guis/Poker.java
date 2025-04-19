@@ -118,13 +118,13 @@ public class Poker implements Listener {
     private void clearBotCards() {
         for (int i = 0; i < 2; i++) {
             ItemStack frame = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
-            gui.setItemName(frame, ChatColor.AQUA, "Bot1");
+            gui.setItemName(frame, ChatColor.AQUA, "Player 1");
             gui.setItem(inv, frame, 10 + i);
         }
 
         for (int i = 0; i < 2; i++) {
             ItemStack frame = new ItemStack(Material.PURPLE_STAINED_GLASS_PANE);
-            gui.setItemName(frame, ChatColor.LIGHT_PURPLE, "Bot2");
+            gui.setItemName(frame, ChatColor.LIGHT_PURPLE, "Player 2");
             gui.setItem(inv, frame, 28 + i);
         }
 
@@ -233,12 +233,12 @@ public class Poker implements Listener {
         gui.setItem(inv, playerInfo, 50);
 
         ItemStack bot1Info = new ItemStack(Material.SKELETON_SKULL);
-        gui.setItemName(bot1Info, ChatColor.AQUA, "Bot1");
+        gui.setItemName(bot1Info, ChatColor.AQUA, "Player 1");
         gui.setItemLore(bot1Info, ChatColor.GRAY, bot1Folded ? "FOLDED" : "In game");
         gui.setItem(inv, bot1Info, 12);
 
         ItemStack bot2Info = new ItemStack(Material.ZOMBIE_HEAD);
-        gui.setItemName(bot2Info, ChatColor.LIGHT_PURPLE, "Bot2");
+        gui.setItemName(bot2Info, ChatColor.LIGHT_PURPLE, "Player 2");
         gui.setItemLore(bot2Info, ChatColor.GRAY, bot2Folded ? "FOLDED" : "In game");
         gui.setItem(inv, bot2Info, 14);
     }
@@ -271,7 +271,7 @@ public class Poker implements Listener {
         if (hasPair) handStrength += 10;
 
         Random random = new Random();
-        String botName = (botNumber == 1) ? "Bot1" : "Bot2";
+        String botName = (botNumber == 1) ? "Player 1" : "Player 2";
 
         if (handStrength < 10 && random.nextDouble() < 0.7) {
             if (botNumber == 1) bot1Folded = true;
@@ -377,20 +377,20 @@ public class Poker implements Listener {
 
         if (!bot1Folded && bot1Rank.ordinal() < bestRank.ordinal()) {
             bestRank = bot1Rank;
-            winner = "Bot1";
+            winner = "Player 1";
         } else if (!bot1Folded && bot1Rank.ordinal() == bestRank.ordinal() && (bestRank == HandRank.ONE_PAIR || bestRank == HandRank.TWO_PAIR)) {
             List<Integer> playerPairs = getPairValues(playerHand, communityCards, bestRank);
             List<Integer> botPairs = getPairValues(bot1Hand, communityCards, bestRank);
-            if (comparePairLists(botPairs, playerPairs) > 0) winner = "Bot1";
+            if (comparePairLists(botPairs, playerPairs) > 0) winner = "Player 1";
         }
 
         if (!bot2Folded && bot2Rank.ordinal() < bestRank.ordinal()) {
             bestRank = bot2Rank;
-            winner = "Bot2";
+            winner = "Player 2";
         } else if (!bot2Folded && bot2Rank.ordinal() == bestRank.ordinal() && (bestRank == HandRank.ONE_PAIR || bestRank == HandRank.TWO_PAIR)) {
             List<Integer> playerPairs = getPairValues(playerHand, communityCards, bestRank);
             List<Integer> botPairs = getPairValues(bot2Hand, communityCards, bestRank);
-            if (comparePairLists(botPairs, playerPairs) > 0) winner = "Bot2";
+            if (comparePairLists(botPairs, playerPairs) > 0) winner = "Player 2";
         }
 
         updateCards();
@@ -413,7 +413,7 @@ public class Poker implements Listener {
             if (!bot1Folded) {
                 ItemStack cardItem = new ItemStack(Material.PAPER);
                 gui.setItemName(cardItem, ChatColor.AQUA, bot1Hand.get(i).toString());
-                gui.setItemLore(cardItem, ChatColor.GRAY, "Bot1");
+                gui.setItemLore(cardItem, ChatColor.GRAY, "Player 1");
                 gui.setItem(inv, cardItem, 10 + i);
             }
         }
@@ -422,7 +422,7 @@ public class Poker implements Listener {
             if (!bot2Folded) {
                 ItemStack cardItem = new ItemStack(Material.PAPER);
                 gui.setItemName(cardItem, ChatColor.LIGHT_PURPLE, bot2Hand.get(i).toString());
-                gui.setItemLore(cardItem, ChatColor.GRAY, "Bot2");
+                gui.setItemLore(cardItem, ChatColor.GRAY, "Player 2");
                 gui.setItem(inv, cardItem, 28 + i);
             }
         }

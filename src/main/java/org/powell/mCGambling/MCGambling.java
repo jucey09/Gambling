@@ -50,7 +50,7 @@ public final class MCGambling extends JavaPlugin {
 
         getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "MCGambling Enabled!");
 
-        getCommand("mcg").setExecutor(new GambleCommand(this));
+        getCommand("mcg").setExecutor(new GambleCommand(this, guiApi));
     }
 
     public GuiApi getGuiApi() {

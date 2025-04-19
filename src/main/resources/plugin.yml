@@ -2,6 +2,7 @@ name: MCGambling
 version: '1.0.0'
 main: org.powell.mCGambling.MCGambling
 api-version: '1.21'
+author: 'jucey'
 depend: [GuiApi]
 commands:
   mcg:
