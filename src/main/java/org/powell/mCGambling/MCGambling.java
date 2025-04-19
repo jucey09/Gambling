@@ -53,51 +53,27 @@ public final class MCGambling extends JavaPlugin {
         getCommand("mcg").setExecutor(new GambleCommand(this, guiApi));
     }
 
-    public GuiApi getGuiApi() {
-        return guiApi;
-    }
+    public GuiApi getGuiApi() { return guiApi; }
 
-    public LineGamble getLineGamble() {
-        return lineGamble;
-    }
+    public LineGamble getLineGamble() { return lineGamble; }
 
-    public SlotMachine getSlotMachine() {
-        return slotMachine;
-    }
+    public SlotMachine getSlotMachine() { return slotMachine; }
 
-    public RussianRoulett getRussianRoulett() {
-        return russianRoulett;
-    }
+    public RussianRoulett getRussianRoulett() { return russianRoulett; }
 
-    public DiceGame getDiceGame() {
-        return diceGame;
-    }
+    public DiceGame getDiceGame() { return diceGame; }
 
-    public CoinTower getCoinTower() {
-        return coinTower;
-    }
+    public CoinTower getCoinTower() { return coinTower; }
 
-    public TreasureHunt getTreasureHunt() {
-        return treasureHunt;
-    }
+    public TreasureHunt getTreasureHunt() { return treasureHunt; }
 
-    public WheelOfFortune getWheelOfFortune() {
-        return wheelOfFortune;
-    }
+    public WheelOfFortune getWheelOfFortune() { return wheelOfFortune; }
 
-    public Blackjack getBlackjack() {
-        return blackjack;
-    }
+    public Blackjack getBlackjack() { return blackjack; }
 
-    public HighLow getHighLow() {
-        return highLow;
-    }
+    public HighLow getHighLow() { return highLow; }
 
-    public CrashGame getCrashGame() {
-        return crashGame;
-    }
+    public CrashGame getCrashGame() { return crashGame; }
 
-    public Poker getPoker() {
-        return poker;
-    }
+    public Poker getPoker() { return poker; }
 }

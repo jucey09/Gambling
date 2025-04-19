@@ -10,8 +10,8 @@ import org.powell.mCGambling.guis.ProjectLauncher;
 import org.powell.guiApi.GuiApi;
 
 public class GambleCommand implements CommandExecutor {
-    private final MCGambling main;
-    private final ProjectLauncher projectLauncher;
+    private MCGambling main;
+    private ProjectLauncher projectLauncher;
 
     public GambleCommand(MCGambling main, GuiApi guiApi) {
         this.main = main;

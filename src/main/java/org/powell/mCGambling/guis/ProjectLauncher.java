@@ -12,12 +12,11 @@ import org.powell.guiApi.GuiApi;
 import org.powell.mCGambling.MCGambling;
 
 public class ProjectLauncher implements Listener {
+    private static final int[] PROJECT_SLOTS = {10, 12, 14, 16};
     private final GuiApi gui;
     private final MCGambling main;
     private final String title = ChatColor.DARK_AQUA + "My Other Projects";
     private final Inventory inv;
-
-    private static final int[] PROJECT_SLOTS = {10, 12, 14, 16};
 
     public ProjectLauncher(MCGambling main, GuiApi gui) {
         this.main = main;
@@ -35,12 +34,7 @@ public class ProjectLauncher implements Listener {
         gui.setItemName(closeButton, ChatColor.RED, "Close");
         gui.setItem(inv, closeButton, 22);
 
-        String[] projectNames = {
-            "Admin Control Center",
-            "Craftify",
-            "Rankify",
-            "Simplified Resource Pack"
-        };
+        String[] projectNames = {"Admin Control Center", "Craftify", "Rankify", "Simplified Resource Pack"};
         for (int i = 0; i < PROJECT_SLOTS.length; i++) {
             ItemStack projectItem = new ItemStack(Material.BOOK);
             gui.setItemName(projectItem, ChatColor.GOLD, projectNames[i]);
@@ -59,25 +53,13 @@ public class ProjectLauncher implements Listener {
             player.closeInventory();
             return;
         }
-        String[] links = {
-            "https://modrinth.com/plugin/admin-control-center",
-            "https://modrinth.com/plugin/craftify-ccg",
-            "https://modrinth.com/plugin/rankify",
-            "https://modrinth.com/resourcepack/simplified-resource-pack"
-        };
-        String[] names = {
-            "Admin Control Center",
-            "Craftify",
-            "Rankify",
-            "Simplified Resource Pack"
-        };
+        String[] links = {"https://modrinth.com/plugin/admin-control-center", "https://modrinth.com/plugin/craftify-ccg", "https://modrinth.com/plugin/rankify", "https://modrinth.com/resourcepack/simplified-resource-pack"};
+        String[] names = {"Admin Control Center", "Craftify", "Rankify", "Simplified Resource Pack"};
         for (int i = 0; i < PROJECT_SLOTS.length; i++) {
             if (slot == PROJECT_SLOTS[i]) {
                 net.md_5.bungee.api.chat.TextComponent message = new net.md_5.bungee.api.chat.TextComponent("Click here to open " + names[i]);
                 message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
-                message.setClickEvent(new net.md_5.bungee.api.chat.ClickEvent(
-                    net.md_5.bungee.api.chat.ClickEvent.Action.OPEN_URL, links[i]
-                ));
+                message.setClickEvent(new net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.OPEN_URL, links[i]));
                 player.spigot().sendMessage(message);
                 player.sendMessage(ChatColor.GRAY + "(If the link doesn't open, check your chat settings.)");
                 return;
