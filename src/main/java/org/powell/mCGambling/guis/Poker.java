@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.powell.guiApi.GuiApi;
 import org.powell.mCGambling.MCGambling;
 
@@ -34,6 +35,9 @@ public class Poker implements Listener {
     private final Inventory inv;
     private final List<Integer> playerCardSlots = Arrays.asList(48, 49);
     private final List<Integer> communityCardSlots = Arrays.asList(21, 22, 23, 24, 25);
+    private final Map<UUID, Inventory> raiseInventories = new HashMap<>();
+    private final Map<UUID, Integer> pendingRaiseAmounts = new HashMap<>();
+    private final String raiseGuiTitle = ChatColor.YELLOW + "Select Raise Amount";
     private boolean isPlaying = false;
     private List<Card> deck;
     private List<Card> playerHand;
@@ -374,11 +378,19 @@ public class Poker implements Listener {
         if (!bot1Folded && bot1Rank.ordinal() < bestRank.ordinal()) {
             bestRank = bot1Rank;
             winner = "Bot1";
+        } else if (!bot1Folded && bot1Rank.ordinal() == bestRank.ordinal() && (bestRank == HandRank.ONE_PAIR || bestRank == HandRank.TWO_PAIR)) {
+            List<Integer> playerPairs = getPairValues(playerHand, communityCards, bestRank);
+            List<Integer> botPairs = getPairValues(bot1Hand, communityCards, bestRank);
+            if (comparePairLists(botPairs, playerPairs) > 0) winner = "Bot1";
         }
 
         if (!bot2Folded && bot2Rank.ordinal() < bestRank.ordinal()) {
             bestRank = bot2Rank;
             winner = "Bot2";
+        } else if (!bot2Folded && bot2Rank.ordinal() == bestRank.ordinal() && (bestRank == HandRank.ONE_PAIR || bestRank == HandRank.TWO_PAIR)) {
+            List<Integer> playerPairs = getPairValues(playerHand, communityCards, bestRank);
+            List<Integer> botPairs = getPairValues(bot2Hand, communityCards, bestRank);
+            if (comparePairLists(botPairs, playerPairs) > 0) winner = "Bot2";
         }
 
         updateCards();
@@ -456,6 +468,45 @@ public class Poker implements Listener {
         return HandRank.HIGH_CARD;
     }
 
+    private List<Integer> getPairValues(List<Card> hand, List<Card> community, HandRank rank) {
+        List<Card> all = new ArrayList<>(hand);
+        all.addAll(community);
+        Map<Integer, Integer> counts = new HashMap<>();
+        for (Card c : all) {
+            counts.put(c.getRankValue(), counts.getOrDefault(c.getRankValue(), 0) + 1);
+        }
+        List<Integer> pairs = new ArrayList<>();
+        List<Integer> kickers = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : counts.entrySet()) {
+            if (entry.getValue() == 2) pairs.add(entry.getKey());
+            else if (entry.getValue() == 1) kickers.add(entry.getKey());
+        }
+        pairs.sort(Collections.reverseOrder());
+        kickers.sort(Collections.reverseOrder());
+        if (rank == HandRank.ONE_PAIR && pairs.size() >= 1) {
+            List<Integer> result = new ArrayList<>();
+            result.add(pairs.get(0));
+            result.addAll(kickers);
+            return result;
+        }
+        if (rank == HandRank.TWO_PAIR && pairs.size() >= 2) {
+            List<Integer> result = new ArrayList<>();
+            result.add(pairs.get(0));
+            result.add(pairs.get(1));
+            result.addAll(kickers);
+            return result;
+        }
+        return new ArrayList<>();
+    }
+
+    private int comparePairLists(List<Integer> a, List<Integer> b) {
+        for (int i = 0; i < Math.min(a.size(), b.size()); i++) {
+            int cmp = Integer.compare(a.get(i), b.get(i));
+            if (cmp != 0) return cmp;
+        }
+        return Integer.compare(a.size(), b.size());
+    }
+
     private void win(Player player, HandRank rank, int multiplier) {
         ItemStack wager = inv.getItem(4);
         if (wager != null && wager.getType() == Material.DIAMOND) {
@@ -486,67 +537,108 @@ public class Poker implements Listener {
         if (e.getInventory() == null || !e.getInventory().equals(inv)) return;
         Player player = (Player) e.getWhoClicked();
 
-        if (e.getCurrentItem() == null) return;
+        if (e.getRawSlot() < inv.getSize()) {
+            if (e.getSlot() == 4 && ((e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.DIAMOND) || (e.getCursor() != null && e.getCursor().getType() == Material.DIAMOND))) {
+                e.setCancelled(false);
+                return;
+            }
+            e.setCancelled(true);
 
-        if (e.getSlot() == 4 && ((e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.DIAMOND) || (e.getCursor() != null && e.getCursor().getType() == Material.DIAMOND))) {
+            if (e.getSlot() == 0) {
+                player.closeInventory();
+                return;
+            }
+
+            if (e.getSlot() == 8) {
+                if (!isPlaying) {
+                    startGame(player);
+                } else if (gameStage == 0) {
+                    dealFlop();
+                } else if (gameStage == 1) {
+                    dealTurn();
+                } else if (gameStage == 2) {
+                    dealRiver();
+                } else if (gameStage == 3) {
+                    showdown(player);
+                }
+                return;
+            }
+
+            if (e.getSlot() == 45) {
+                if (currentBet > playerBet) {
+                    int amountToCall = currentBet - playerBet;
+                    player.getInventory().removeItem(new ItemStack(Material.DIAMOND, amountToCall));
+                    playerBet += amountToCall;
+                    pot += amountToCall;
+                }
+                if (gameStage == 1) {
+                    dealTurn();
+                } else if (gameStage == 2) {
+                    dealRiver();
+                } else if (gameStage == 3) {
+                    showdown(player);
+                }
+                return;
+            }
+
+            if (e.getSlot() == 46) {
+                Inventory raiseInv = Bukkit.createInventory(player, 9, raiseGuiTitle);
+                ItemStack frame = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+                ItemMeta meta = frame.getItemMeta();
+                if (meta != null) meta.setDisplayName(" ");
+                frame.setItemMeta(meta);
+                for (int i = 0; i < 9; i++) {
+                    if (i != 4) raiseInv.setItem(i, frame);
+                }
+                ItemStack confirm = new ItemStack(Material.LIME_CONCRETE);
+                gui.setItemName(confirm, ChatColor.GREEN, "CONFIRM");
+                raiseInv.setItem(8, confirm);
+                player.openInventory(raiseInv);
+                raiseInventories.put(player.getUniqueId(), raiseInv);
+                e.setCancelled(true);
+                return;
+            }
+
+            if (e.getSlot() == 47) {
+                playerFolded = true;
+                hideActionButtons();
+                if (bot1Folded && bot2Folded) {
+                    showdown(player);
+                }
+            }
+        } else {
             e.setCancelled(false);
-            return;
         }
+    }
 
-        e.setCancelled(true);
+    @EventHandler
+    public void onRaiseInventoryClick(InventoryClickEvent e) {
+        Player player = (Player) e.getWhoClicked();
+        if (e.getInventory() == null || !raiseGuiTitle.equals(e.getView().getTitle())) return;
 
-        if (e.getSlot() == 0) {
-            player.closeInventory();
-            return;
-        }
-
-        if (e.getSlot() == 8) {
-            if (!isPlaying) {
-                startGame(player);
-            } else if (gameStage == 0) {
-                dealFlop();
-            } else if (gameStage == 1) {
-                dealTurn();
-            } else if (gameStage == 2) {
-                dealRiver();
-            } else if (gameStage == 3) {
-                showdown(player);
+        if (e.getRawSlot() < 9) {
+            e.setCancelled(e.getSlot() != 4 || ((e.getCurrentItem() == null || e.getCurrentItem().getType() != Material.DIAMOND) && (e.getCursor() == null || e.getCursor().getType() != Material.DIAMOND) && (e.getCurrentItem() != null || e.getCursor() != null)));
+            if (e.getSlot() == 8) {
+                int raiseAmount = 0;
+                ItemStack stack = e.getInventory().getItem(4);
+                if (stack != null && stack.getType() == Material.DIAMOND) {
+                    raiseAmount = stack.getAmount();
+                }
+                if (raiseAmount <= 0) {
+                    player.sendMessage(ChatColor.RED + "Place diamonds in the center slot to raise.");
+                    return;
+                }
+                e.getInventory().setItem(4, null);
+                playerBet += raiseAmount;
+                pot += raiseAmount;
+                currentBet += raiseAmount;
+                player.sendMessage(ChatColor.YELLOW + "You raised by " + raiseAmount + " diamond" + (raiseAmount > 1 ? "s" : "") + ".");
+                player.openInventory(inv);
+                updatePotDisplay(player);
+                raiseInventories.remove(player.getUniqueId());
             }
-            return;
-        }
-
-        if (e.getSlot() == 45) {
-            if (currentBet > playerBet) {
-                int amountToCall = currentBet - playerBet;
-                player.getInventory().removeItem(new ItemStack(Material.DIAMOND, amountToCall));
-                playerBet += amountToCall;
-                pot += amountToCall;
-            }
-            if (gameStage == 1) {
-                dealTurn();
-            } else if (gameStage == 2) {
-                dealRiver();
-            } else if (gameStage == 3) {
-                showdown(player);
-            }
-            return;
-        }
-
-        if (e.getSlot() == 46) {
-            int amountToRaise = 1;
-            player.getInventory().removeItem(new ItemStack(Material.DIAMOND, amountToRaise));
-            playerBet += amountToRaise;
-            pot += amountToRaise;
-            currentBet += amountToRaise;
-            return;
-        }
-
-        if (e.getSlot() == 47) {
-            playerFolded = true;
-            hideActionButtons();
-            if (bot1Folded && bot2Folded) {
-                showdown(player);
-            }
+        } else {
+            e.setCancelled(false);
         }
     }
 
